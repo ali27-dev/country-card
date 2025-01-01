@@ -10,16 +10,21 @@ const countriesContainer = document.querySelector('.countries');
 // https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}
 ///////////////////////////////
 const renderCountry = function (data, className = '') {
-  const languages = Object.values(data.languages).join(', ');
-  const currency = Object.values(data.currencies)
-    .map(curr => curr.name)
-    .join(', ');
+  const languages = data.languages
+    ? Object.values(data.languages).join(', ')
+    : 'No languages available';
+  const currency = data.currencies
+    ? Object.values(data.currencies)
+        .map(curr => curr.name)
+        .join(', ')
+    : 'No currencies available';
+  const flag = data.flags?.svg || 'https://via.placeholder.com/150';
 
   const html = `
-        <article class="country">
-          <img class="country__img" src="${data.flags.svg}" />
+        <article class="country ${className}">
+          <img class="country__img" src="${flag}" />
           <div class="country__data">
-            <h3 class="country__name">${data.name.common}</h3>
+            <h3 class="country__name">${data.name?.common}</h3>
             <h4 class="country__region">${data.region}</h4>
             <p class="country__row"><span>👫</span>${(
               data.population / 1000000
@@ -33,6 +38,7 @@ const renderCountry = function (data, className = '') {
   countriesContainer.insertAdjacentHTML('beforeend', html);
   countriesContainer.style.opacity = 1;
 };
+
 /*
 const getCountryData = function (country) {
   const request = new XMLHttpRequest();
@@ -69,8 +75,19 @@ getCountryData('pakistan');
 
 const getCountryData = function (country) {
   fetch(`https://restcountries.com/v3.1/name/${country}`)
-    .then(Response => Response.json())
-    .then(data => renderCountry(data[0]));
+    .then(response => response.json())
+    .then(data => {
+      renderCountry(data[0]);
+
+      const neighbour = data[0].borders?.[0];
+
+      if (!neighbour) return;
+
+      //   conutry 2
+      return fetch(`https://restcountries.com/v3.1/alpha/${neighbour}`);
+    })
+    .then(response => response.json())
+    .then(data => renderCountry(data[0], 'neighbour'));
 };
 
 getCountryData('pakistan');
