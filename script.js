@@ -36,11 +36,11 @@ const renderCountry = function (data, className = '') {
       `;
 
   countriesContainer.insertAdjacentHTML('beforeend', html);
-  //   countriesContainer.style.opacity = 1;
+  countriesContainer.style.opacity = 1;
 };
 const renderError = function (msg) {
   countriesContainer.insertAdjacentText('beforeend', msg);
-  //   countriesContainer.style.opacity = 1;
+  countriesContainer.style.opacity = 1;
 };
 /*
 const getCountryData = function (country) {
@@ -74,12 +74,12 @@ const getCountryData = function (country) {
 
 getCountryData('pakistan');
 // getCountryData('usa');
-*/
+
 
 const getCountryData = function (country) {
   fetch(`https://restcountries.com/v3.1/name/${country}`)
     .then(response => {
-      console.log(response);
+      // console.log(response);
       if (!response.ok)
         throw new Error(`Country not found(${response.status})`);
 
@@ -108,7 +108,8 @@ const getCountryData = function (country) {
 };
 
 btn.addEventListener('click', function () {
-  getCountryData('australia');
+  getCountryData('pakistan');
 });
 
 // getCountryData('asfdasda');
+*/
